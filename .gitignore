@@ -32,5 +32,7 @@ npm-debug.log
 /modules/
 
 /bundle/
+/website/lib/libphonenumber-max.js
+/website/lib/libphonenumber-max.js.map
 
 /react-styleguidist/project

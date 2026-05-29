@@ -1230,17 +1230,32 @@ International: {value && formatPhoneNumberIntl(value)}
 									</h1>
 
 									<p>
-										Note: I personally prefer not using strict phone number validation via <code>isValidPhoneNumber()</code> in my projects. <a target="_blank" href="https://gitlab.com/catamphetamine/libphonenumber-js#using-phone-number-validation-feature">Read the rationale</a>.
-										<br/>
-										Instead I'd use <code>isPossiblePhoneNumber()</code> that just validates phone number length.
+										This example uses <code>isPossiblePhoneNumber(value)</code> function to validate phone number length.
 									</p>
 
 									<form>
 										<PhoneInput
-											error={this.state.value_validation ? (libphonenumber.parsePhoneNumberFromString(this.state.value_validation) && libphonenumber.parsePhoneNumberFromString(this.state.value_validation).isValid() ? undefined : 'Invalid phone number') : 'Phone number required'}
 											placeholder="Enter phone number"
 											value={this.state.value_validation}
-											onChange={value => this.setState({ value_validation: value })}/>
+											onChange={value => this.setState({ value_validation: value })}
+										/>
+
+										<p>
+											{this.state.value_validation
+												? (
+													libphonenumber.parsePhoneNumberFromString(this.state.value_validation) && libphonenumber.parsePhoneNumberFromString(this.state.value_validation).isPossible()
+														? '✅ Phone number length is correct'
+														: '❌ Invalid phone number length'
+													)
+													: (
+														<span>
+															You have not entered a phone number
+															{/* Inserted an invisible UTF-8 emoji here to prevent `line-height` jumps. */}
+															<span style={{ visibility: 'hidden' }}>❌</span>
+														</span>
+													)
+											}
+										</p>
 									</form>
 
 									<p>
@@ -1251,32 +1266,20 @@ International: {value && formatPhoneNumberIntl(value)}
 										<strong>Is possible:</strong> {this.state.value_validation && libphonenumber.parsePhoneNumberFromString(this.state.value_validation) && <code>{libphonenumber.parsePhoneNumberFromString(this.state.value_validation).isPossible() ? 'true' : 'false'}</code>}
 										<br/>
 										<strong>Is valid:</strong> {this.state.value_validation && libphonenumber.parsePhoneNumberFromString(this.state.value_validation) && <code>{libphonenumber.parsePhoneNumberFromString(this.state.value_validation).isValid() ? 'true' : 'false'}</code>}
-										<br/>
-										{/* <strong>Is valid (2):</strong> {this.state.value_validation && <code>{isValidPhoneNumber(this.state.value_validation) ? 'true' : 'false'}</code>} */}
-										<br/>
-										<strong>Local:</strong> {this.state.value_validation && libphonenumber.parsePhoneNumberFromString(this.state.value_validation) && <code>{libphonenumber.parsePhoneNumberFromString(this.state.value_validation).formatNational()}</code>}
-										<br/>
-										<strong>International:</strong> {this.state.value_validation && libphonenumber.parsePhoneNumberFromString(this.state.value_validation) && <code>{libphonenumber.parsePhoneNumberFromString(this.state.value_validation).formatInternational()}</code>}
 									</p>
 
 									<Highlight lang="jsx">
-{`import PhoneInput, {
-	formatPhoneNumber,
-	formatPhoneNumberIntl,
-	isPossiblePhoneNumber,
-	isValidPhoneNumber
-} from 'react-phone-number-input'
+{`import PhoneInput, { isPossiblePhoneNumber } from 'react-phone-number-input'
 
 <PhoneInput
   placeholder="Enter phone number"
   value={value}
-  onChange={setValue}
-  error={value ? (isValidPhoneNumber(value) ? undefined : 'Invalid phone number') : 'Phone number required'}/>
+  onChange={setValue}/>
 
-Is possible: {value && isPossiblePhoneNumber(value) ? 'true' : 'false'}
-Is valid: {value && isValidPhoneNumber(value) ? 'true' : 'false'}
-National: {value && formatPhoneNumber(value)}
-International: {value && formatPhoneNumberIntl(value)}
+{value
+  ? (isPossiblePhoneNumber(value) ? 'Phone number length is correct' : 'Invalid phone number length')
+  : 'You have not entered a phone number'
+}
 `}
 									</Highlight>
 								</section>
